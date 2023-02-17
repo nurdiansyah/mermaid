@@ -30,7 +30,7 @@ import utils, { directiveSanitizer } from './utils';
 import DOMPurify from 'dompurify';
 import { MermaidConfig } from './config.type';
 import { evaluate } from './diagrams/common/common';
-import isEmpty from 'lodash-es/isEmpty.js';
+import { isEmpty } from '@deboxsoft/module-core';
 import { setA11yDiagramInfo, addSVGa11yTitleDescription } from './accessibility';
 import { parseDirective } from './directiveUtils';
 

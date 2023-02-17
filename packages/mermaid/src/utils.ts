@@ -30,7 +30,7 @@ import { log } from './logger';
 import { detectType } from './diagram-api/detectType';
 import assignWithDepth from './assignWithDepth';
 import { MermaidConfig } from './config.type';
-import memoize from 'lodash-es/memoize.js';
+import { memo } from '@deboxsoft/module-core';
 
 // Effectively an enum of the supported curve types, accessible by name
 const d3CurveTypes = {

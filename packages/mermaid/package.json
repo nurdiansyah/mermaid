@@ -61,8 +61,6 @@
     "dompurify": "2.4.3",
     "elkjs": "^0.8.2",
     "khroma": "^2.0.0",
-    "lodash-es": "^4.17.21",
-    "moment": "^2.29.4",
     "non-layered-tidy-tree-layout": "^2.0.2",
     "stylis": "^4.1.2",
     "ts-dedent": "^2.2.0",
@@ -70,6 +68,7 @@
     "web-worker": "^1.2.0"
   },
   "devDependencies": {
+    "@deboxsoft/module-core": "^2.6.74",
     "@types/cytoscape": "^3.19.9",
     "@types/d3": "^7.4.0",
     "@types/dompurify": "^2.4.0",
@@ -104,6 +103,9 @@
     "unist-util-flatmap": "^1.0.0",
     "vitepress": "^1.0.0-alpha.46",
     "vitepress-plugin-search": "^1.0.4-alpha.19"
+  },
+  "peerDependencies": {
+    "@deboxsoft/module-core": "2.x"
   },
   "files": [
     "dist",

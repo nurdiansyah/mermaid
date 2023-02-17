@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { dayjs as moment } from '@deboxsoft/module-core';
 import { log } from '../../logger';
 import {
   select,

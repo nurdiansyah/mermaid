@@ -7,7 +7,7 @@
  */
 import { D3Element } from './mermaidAPI';
 
-import isEmpty from 'lodash-es/isEmpty.js';
+import { isEmpty } from '@deboxsoft/module-core';
 
 /**
  * SVG element role:

@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { dayjs } from '@deboxsoft/module-core';
 import { sanitizeUrl } from '@braintree/sanitize-url';
 import { log } from '../../logger';
 import * as configApi from '../../config';
@@ -166,9 +166,9 @@ const checkTaskDates = function (task, dateFormat, excludes, includes) {
   if (!excludes.length || task.manualEndTime) {
     return;
   }
-  let startTime = moment(task.startTime, dateFormat, true);
+  let startTime = dayjs(task.startTime, dateFormat, true);
   startTime.add(1, 'd');
-  let endTime = moment(task.endTime, dateFormat, true);
+  let endTime = dayjs(task.endTime, dateFormat, true);
   let renderEndTime = fixTaskDates(startTime, endTime, dateFormat, excludes, includes);
   task.endTime = endTime.toDate();
   task.renderEndTime = renderEndTime;
@@ -223,7 +223,7 @@ const getStartDate = function (prevTime, dateFormat, str) {
   }
 
   // Check for actual date set
-  let mDate = moment(str, dateFormat.trim(), true);
+  let mDate = dayjs(str, dateFormat.trim(), true);
   if (mDate.isValid()) {
     return mDate.toDate();
   } else {
@@ -260,16 +260,16 @@ const getStartDate = function (prevTime, dateFormat, str) {
 const parseDuration = function (str) {
   const statement = /^(\d+(?:\.\d+)?)([Mdhmswy]|ms)$/.exec(str.trim());
   if (statement !== null) {
-    return moment.duration(Number.parseFloat(statement[1]), statement[2]);
+    return dayjs.duration(Number.parseFloat(statement[1]), statement[2]);
   }
-  return moment.duration.invalid();
+  return dayjs.duration.invalid();
 };
 
 const getEndDate = function (prevTime, dateFormat, str, inclusive = false) {
   str = str.trim();
 
   // Check for actual date
-  let mDate = moment(str, dateFormat.trim(), true);
+  let mDate = dayjs(str, dateFormat.trim(), true);
   if (mDate.isValid()) {
     if (inclusive) {
       mDate.add(1, 'd');
@@ -277,7 +277,7 @@ const getEndDate = function (prevTime, dateFormat, str, inclusive = false) {
     return mDate.toDate();
   }
 
-  const endTime = moment(prevTime);
+  const endTime = dayjs(prevTime);
   const duration = parseDuration(str);
   if (duration.isValid()) {
     endTime.add(duration);
@@ -346,7 +346,7 @@ const compileData = function (prevTask, dataStr) {
 
   if (endTimeData) {
     task.endTime = getEndDate(task.startTime, dateFormat, endTimeData, inclusiveEndDates);
-    task.manualEndTime = moment(endTimeData, 'YYYY-MM-DD', true).isValid();
+    task.manualEndTime = dayjs(endTimeData, 'YYYY-MM-DD', true).isValid();
     checkTaskDates(task, dateFormat, excludes, includes);
   }
 
@@ -496,7 +496,7 @@ const compileTasks = function () {
       );
       if (rawTasks[pos].endTime) {
         rawTasks[pos].processed = true;
-        rawTasks[pos].manualEndTime = moment(
+        rawTasks[pos].manualEndTime = dayjs(
           rawTasks[pos].raw.endTime.data,
           'YYYY-MM-DD',
           true
