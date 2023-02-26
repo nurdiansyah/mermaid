@@ -104,7 +104,7 @@
     "vitepress-plugin-search": "^1.0.4-alpha.19"
   },
   "peerDependencies": {
-    "@deboxsoft/module-core": "^2.8"
+    "@deboxsoft/module-core": "^2.x"
   },
   "files": [
     "dist",
