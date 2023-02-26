@@ -1,3 +1,4 @@
+import path from 'path';
 import jison from './.vite/jisonPlugin';
 import { defineConfig } from 'vitest/config';
 
@@ -10,7 +11,7 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     // TODO: should we move this to a mermaid-core package?
-    setupFiles: ['packages/mermaid/src/tests/setup.ts'],
+    setupFiles: [path.join(__dirname, 'packages/mermaid/src/tests/setup.ts')],
     coverage: {
       reporter: ['text', 'json', 'html', 'lcov'],
     },

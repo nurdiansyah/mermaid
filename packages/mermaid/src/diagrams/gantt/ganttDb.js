@@ -166,12 +166,13 @@ const checkTaskDates = function (task, dateFormat, excludes, includes) {
   if (!excludes.length || task.manualEndTime) {
     return;
   }
-  let startTime = dayjs(task.startTime, dateFormat, true);
-  startTime.add(1, 'd');
-  let endTime = dayjs(task.endTime, dateFormat, true);
-  let renderEndTime = fixTaskDates(startTime, endTime, dateFormat, excludes, includes);
-  task.endTime = endTime.toDate();
-  task.renderEndTime = renderEndTime;
+  let startTime = dayjs(task.startTime, task.startTime instanceof Date ? undefined : dateFormat);
+  startTime = startTime.add(1, 'd');
+  // hack: invalid date if calculate from durations plugin with format, solve format = undefined
+  let endTime = dayjs(task.endTime, task.endTime instanceof Date ? undefined : dateFormat);
+  let fixDates = fixTaskDates(startTime, endTime, dateFormat, excludes, includes);
+  task.endTime = fixDates.endTime.toDate();
+  task.renderEndTime = fixDates.renderEndTime;
 };
 
 const fixTaskDates = function (startTime, endTime, dateFormat, excludes, includes) {
@@ -183,11 +184,11 @@ const fixTaskDates = function (startTime, endTime, dateFormat, excludes, include
     }
     invalid = isInvalidDate(startTime, dateFormat, excludes, includes);
     if (invalid) {
-      endTime.add(1, 'd');
+      endTime = endTime.add(1, 'd');
     }
-    startTime.add(1, 'd');
+    startTime = startTime.add(1, 'd');
   }
-  return renderEndTime;
+  return { renderEndTime, startTime, endTime };
 };
 
 const getStartDate = function (prevTime, dateFormat, str) {
@@ -223,7 +224,7 @@ const getStartDate = function (prevTime, dateFormat, str) {
   }
 
   // Check for actual date set
-  let mDate = dayjs(str, dateFormat.trim(), true);
+  let mDate = dayjs(str, dateFormat.trim());
   if (mDate.isValid()) {
     return mDate.toDate();
   } else {
@@ -262,7 +263,7 @@ const parseDuration = function (str) {
   if (statement !== null) {
     return dayjs.duration(Number.parseFloat(statement[1]), statement[2]);
   }
-  return dayjs.duration.invalid();
+  return dayjs.duration();
 };
 
 const getEndDate = function (prevTime, dateFormat, str, inclusive = false) {
@@ -272,15 +273,15 @@ const getEndDate = function (prevTime, dateFormat, str, inclusive = false) {
   let mDate = dayjs(str, dateFormat.trim(), true);
   if (mDate.isValid()) {
     if (inclusive) {
-      mDate.add(1, 'd');
+      mDate = mDate.add(1, 'd');
     }
     return mDate.toDate();
   }
 
-  const endTime = dayjs(prevTime);
+  let endTime = dayjs(prevTime);
   const duration = parseDuration(str);
-  if (duration.isValid()) {
-    endTime.add(duration);
+  if (dayjs.isDuration(duration)) {
+    endTime = endTime.add(duration);
   }
   return endTime.toDate();
 };
@@ -346,7 +347,7 @@ const compileData = function (prevTask, dataStr) {
 
   if (endTimeData) {
     task.endTime = getEndDate(task.startTime, dateFormat, endTimeData, inclusiveEndDates);
-    task.manualEndTime = dayjs(endTimeData, 'YYYY-MM-DD', true).isValid();
+    task.manualEndTime = dayjs(endTimeData, dateFormat).isValid();
     checkTaskDates(task, dateFormat, excludes, includes);
   }
 
@@ -486,7 +487,6 @@ const compileTasks = function () {
         }
         break;
     }
-
     if (rawTasks[pos].startTime) {
       rawTasks[pos].endTime = getEndDate(
         rawTasks[pos].startTime,

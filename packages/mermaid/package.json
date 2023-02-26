@@ -68,7 +68,7 @@
     "web-worker": "^1.2.0"
   },
   "devDependencies": {
-    "@deboxsoft/module-core": "^2.6.75",
+    "@deboxsoft/module-core": "^2.6.84",
     "@types/cytoscape": "^3.19.9",
     "@types/d3": "^7.4.0",
     "@types/dompurify": "^2.4.0",
@@ -105,7 +105,7 @@
     "vitepress-plugin-search": "^1.0.4-alpha.19"
   },
   "peerDependencies": {
-    "@deboxsoft/module-core": "2.x"
+    "@deboxsoft/module-core": "^2.8"
   },
   "files": [
     "dist",
